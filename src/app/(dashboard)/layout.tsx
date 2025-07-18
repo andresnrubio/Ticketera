@@ -40,9 +40,8 @@ export default function DashboardLayout({
   }
 
   if (!user) {
-    // This case will be hit after loading is false and user is null.
-    // The useEffect will have already initiated the redirect.
-    // Returning null prevents a flash of unstyled content.
+    // This state can be reached briefly after loading is false but before the redirect effect runs.
+    // Returning null prevents a flash of the dashboard layout for unauthenticated users.
     return null;
   }
 
