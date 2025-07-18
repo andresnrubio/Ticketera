@@ -10,7 +10,7 @@ export default function DashboardPage() {
   return (
     <>
       <DashboardHeader title="Dashboard">
-        <Link href="/tickets/new" legacyBehavior passHref>
+        <Link href="/tickets/new">
           <Button>
             <PlusCircle />
             New Ticket

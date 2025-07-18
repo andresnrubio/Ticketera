@@ -19,7 +19,7 @@ export function SidebarNav() {
 
   const menuItems = [
     {
-      href: '/',
+      href: '/dashboard',
       label: 'Dashboard',
       icon: LayoutDashboard,
       roles: ['Admin', 'Analyst', 'Standard'],
@@ -62,7 +62,7 @@ export function SidebarNav() {
         <SidebarMenu className="p-4 flex-1">
         {filteredMenuItems.map((item) => (
             <SidebarMenuItem key={item.href}>
-            <Link href={item.href} legacyBehavior passHref>
+            <Link href={item.href}>
                 <SidebarMenuButton
                 isActive={pathname === item.href}
                 tooltip={item.label}

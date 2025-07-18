@@ -18,11 +18,11 @@ export default function DashboardLayout({
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push('/login');
+      router.replace('/login');
     }
   }, [user, loading, router]);
 
-  if (loading) {
+  if (loading || !user) {
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-background">
             <div className="flex items-center gap-2 mb-4">
@@ -37,12 +37,6 @@ export default function DashboardLayout({
             <p className="text-muted-foreground mt-2">Loading your dashboard...</p>
         </div>
     );
-  }
-
-  if (!user) {
-    // This state can be reached briefly after loading is false but before the redirect effect runs.
-    // Returning null prevents a flash of the dashboard layout for unauthenticated users.
-    return null;
   }
 
   return (
