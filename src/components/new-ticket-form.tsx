@@ -23,8 +23,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Paperclip, Send } from 'lucide-react';
+import { Paperclip, Send, X } from 'lucide-react';
 import React from 'react';
+import Image from 'next/image';
 
 const formSchema = z.object({
   customerName: z.string().min(2, 'Name must be at least 2 characters.'),
@@ -34,11 +35,15 @@ const formSchema = z.object({
   priority: z.enum(['Low', 'Medium', 'High', 'Urgent']),
 });
 
+type Attachment = {
+  file: File;
+  preview: string;
+};
+
 export function NewTicketForm() {
   const { toast } = useToast();
-  const [attachments, setAttachments] = React.useState<File[]>([]);
+  const [attachments, setAttachments] = React.useState<Attachment[]>([]);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
-
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -52,7 +57,7 @@ export function NewTicketForm() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    console.log({ ...values, attachments: attachments.map(a => a.file) });
     toast({
       title: 'Ticket Created!',
       description: 'Your new support ticket has been successfully created.',
@@ -63,13 +68,32 @@ export function NewTicketForm() {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      setAttachments(Array.from(event.target.files));
+      const newFiles = Array.from(event.target.files).map(file => ({
+        file,
+        preview: URL.createObjectURL(file),
+      }));
+      setAttachments(prev => [...prev, ...newFiles]);
     }
+  };
+
+  const removeAttachment = (index: number) => {
+    setAttachments(prev => {
+      const newAttachments = [...prev];
+      const removed = newAttachments.splice(index, 1);
+      URL.revokeObjectURL(removed[0].preview);
+      return newAttachments;
+    });
   };
 
   const handleAttachmentClick = () => {
     fileInputRef.current?.click();
   };
+
+  React.useEffect(() => {
+    return () => {
+      attachments.forEach(attachment => URL.revokeObjectURL(attachment.preview));
+    };
+  }, [attachments]);
 
   return (
     <Card>
@@ -161,32 +185,59 @@ export function NewTicketForm() {
               )}
             />
             <FormItem>
-                <FormLabel>Attachments</FormLabel>
-                <FormControl>
+              <FormLabel>Attachments</FormLabel>
+              <FormControl>
                 <>
-                    <input
-                        type="file"
-                        ref={fileInputRef}
-                        onChange={handleFileChange}
-                        multiple
-                        className="hidden"
-                    />
-                    <Button type="button" variant="outline" onClick={handleAttachmentClick}>
-                        <Paperclip className="mr-2 h-4 w-4" />
-                        Add Files
-                    </Button>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileChange}
+                    multiple
+                    className="hidden"
+                    accept="image/*,application/pdf"
+                  />
+                  <Button type="button" variant="outline" onClick={handleAttachmentClick}>
+                    <Paperclip className="mr-2 h-4 w-4" />
+                    Add Files
+                  </Button>
                 </>
-                </FormControl>
-                {attachments.length > 0 && (
-                <div className="mt-2 text-sm text-muted-foreground space-y-1">
-                    {attachments.map(file => <p key={file.name}>{file.name}</p>)}
+              </FormControl>
+              {attachments.length > 0 && (
+                <div className="mt-4 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                  {attachments.map((attachment, index) => (
+                    <div key={index} className="relative group">
+                      {attachment.file.type.startsWith('image/') ? (
+                        <Image
+                          src={attachment.preview}
+                          alt={attachment.file.name}
+                          width={150}
+                          height={150}
+                          className="w-full h-24 object-cover rounded-md"
+                        />
+                      ) : (
+                        <div className="w-full h-24 flex flex-col items-center justify-center bg-muted rounded-md p-2">
+                            <Paperclip className="h-8 w-8 text-muted-foreground" />
+                            <p className="text-xs text-muted-foreground text-center truncate w-full mt-1">{attachment.file.name}</p>
+                        </div>
+                      )}
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        className="absolute -top-2 -right-2 h-6 w-6 rounded-full opacity-0 group-hover:opacity-100"
+                        onClick={() => removeAttachment(index)}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
                 </div>
-                )}
+              )}
             </FormItem>
           </CardContent>
           <CardFooter>
             <Button type="submit" className="ml-auto">
-              <Send className="mr-2 h-4 w-4"/>
+              <Send className="mr-2 h-4 w-4" />
               Submit Ticket
             </Button>
           </CardFooter>
