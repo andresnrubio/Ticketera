@@ -10,39 +10,47 @@ import {
 } from '@/components/ui/sidebar';
 import { Logo } from '@/components/icons';
 import { Separator } from './ui/separator';
+import { useAuth } from '@/hooks/use-auth';
+import type { UserRole } from '@/lib/types';
 
 export function SidebarNav() {
   const pathname = usePathname();
+  const { user } = useAuth();
 
   const menuItems = [
     {
       href: '/',
       label: 'Dashboard',
       icon: LayoutDashboard,
+      roles: ['Admin', 'Analyst', 'Standard'],
     },
     {
       href: '/tickets/new',
       label: 'New Ticket',
       icon: Ticket,
+      roles: ['Admin', 'Standard'],
     },
     {
       href: '/analytics',
       label: 'Analytics',
       icon: BarChart3,
-      role: ['Admin'],
+      roles: ['Admin', 'Analyst'],
     },
     {
         href: '/users',
         label: 'User Management',
         icon: Users,
-        role: ['Admin']
+        roles: ['Admin']
     },
     {
       href: '/settings',
       label: 'Settings',
       icon: Settings,
+      roles: ['Admin', 'Analyst', 'Standard'],
     },
   ];
+
+  const filteredMenuItems = menuItems.filter(item => user && item.roles.includes(user.role));
 
   return (
     <div className="flex flex-col h-full">
@@ -52,7 +60,7 @@ export function SidebarNav() {
         </div>
         <Separator />
         <SidebarMenu className="p-4 flex-1">
-        {menuItems.map((item) => (
+        {filteredMenuItems.map((item) => (
             <SidebarMenuItem key={item.href}>
             <Link href={item.href} legacyBehavior passHref>
                 <SidebarMenuButton

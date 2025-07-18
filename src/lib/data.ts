@@ -1,5 +1,16 @@
 import type { Agent, Ticket, User, UserRole } from './types';
 
+export type UserCredentials = {
+  email: string;
+  password?: string;
+};
+
+export const testUsers: (User & UserCredentials)[] = [
+    { id: 'user-1', name: 'Admin User', email: 'admin@admin.com', password: 'Admin', avatar: 'https://i.pravatar.cc/150?u=admin', role: 'Admin' },
+    { id: 'user-2', name: 'Analyst User', email: 'analyst@analyst.com', password: 'analyst', avatar: 'https://i.pravatar.cc/150?u=analyst', role: 'Analyst' },
+    { id: 'user-3', name: 'Standard User', email: 'user@user.com', password: 'user', avatar: 'https://i.pravatar.cc/150?u=standard', role: 'Standard' },
+];
+
 export const agents: Agent[] = [
   { id: 'agent-1', name: 'Alice Johnson', avatar: 'https://i.pravatar.cc/150?u=agent-1' },
   { id: 'agent-2', name: 'Bob Williams', avatar: 'https://i.pravatar.cc/150?u=agent-2' },
@@ -8,9 +19,7 @@ export const agents: Agent[] = [
 ];
 
 export const users: User[] = [
-    { id: 'user-1', name: 'Admin User', email: 'admin@example.com', avatar: 'https://i.pravatar.cc/150?u=admin', role: 'Admin' },
-    { id: 'user-2', name: 'Analyst User', email: 'analyst@example.com', avatar: 'https://i.pravatar.cc/150?u=analyst', role: 'Analyst' },
-    { id: 'user-3', name: 'Standard User', email: 'user@example.com', avatar: 'https://i.pravatar.cc/150?u=standard', role: 'Standard' },
+    ...testUsers.map(({password, ...user}) => user), // remove password from exported users
     ...agents.map((agent, index) => ({
         id: `user-${index + 4}`,
         name: agent.name,
@@ -150,3 +159,10 @@ function subDays(date: Date, days: number) {
 }
 
 export const getTicketById = (id: string) => tickets.find(ticket => ticket.id === id);
+
+export const getUser = ({ email, password }: UserCredentials): User | null => {
+    const user = testUsers.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
+    if (!user) return null;
+    const { password: _, ...userWithoutPassword } = user;
+    return userWithoutPassword;
+};

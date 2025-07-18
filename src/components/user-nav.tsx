@@ -16,13 +16,20 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { LogOut, User as UserIcon, Settings } from 'lucide-react';
 import Link from 'next/link';
+import { useAuth } from '@/hooks/use-auth';
+import { useRouter } from 'next/navigation';
 
 export function UserNav() {
-  // Mock user data
-  const user = {
-      name: "Admin User",
-      email: "admin@example.com",
-      avatar: "https://i.pravatar.cc/150?u=admin",
+  const { user, logout } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
+  };
+
+  if (!user) {
+    return null;
   }
 
   return (
@@ -60,11 +67,9 @@ export function UserNav() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-            <Link href="/login">
-                <LogOut className="mr-2" />
-                <span>Log out</span>
-            </Link>
+        <DropdownMenuItem onClick={handleLogout}>
+            <LogOut className="mr-2" />
+            <span>Log out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

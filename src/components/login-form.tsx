@@ -17,6 +17,8 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { LogIn } from 'lucide-react';
+import { useAuth } from '@/hooks/use-auth';
+import { useState } from 'react';
 
 const formSchema = z.object({
   email: z.string().email('Invalid email address.'),
@@ -26,6 +28,8 @@ const formSchema = z.object({
 export function LoginForm() {
   const { toast } = useToast();
   const router = useRouter();
+  const { login } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -35,14 +39,25 @@ export function LoginForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Mock authentication
-    console.log(values);
-    toast({
-      title: 'Login Successful!',
-      description: 'Redirecting to your dashboard.',
-    });
-    router.push('/');
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setLoading(true);
+    const success = await login(values.email, values.password);
+    setLoading(false);
+
+    if (success) {
+        toast({
+            title: 'Login Successful!',
+            description: 'Redirecting to your dashboard.',
+        });
+        router.push('/');
+    } else {
+        toast({
+            title: 'Login Failed',
+            description: 'Invalid email or password.',
+            variant: 'destructive',
+        });
+        form.setValue('password', '');
+    }
   }
 
   return (
@@ -78,9 +93,8 @@ export function LoginForm() {
             />
           </CardContent>
           <CardFooter>
-            <Button type="submit" className="w-full">
-                <LogIn className="mr-2 h-4 w-4" />
-              Sign In
+            <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? 'Signing in...' : <><LogIn className="mr-2 h-4 w-4" /> Sign In</>}
             </Button>
           </CardFooter>
         </form>
