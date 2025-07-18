@@ -49,7 +49,7 @@ export function LoginForm() {
             title: 'Login Successful!',
             description: 'Redirecting to your dashboard.',
         });
-        router.push('/');
+        router.push('/dashboard');
     } else {
         toast({
             title: 'Login Failed',
