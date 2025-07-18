@@ -25,25 +25,25 @@ export function SidebarNav() {
       roles: ['Admin', 'Analyst', 'Standard'],
     },
     {
-      href: '/tickets/new',
+      href: '/dashboard/tickets/new',
       label: 'New Ticket',
       icon: Ticket,
       roles: ['Admin', 'Standard'],
     },
     {
-      href: '/analytics',
+      href: '/dashboard/analytics',
       label: 'Analytics',
       icon: BarChart3,
       roles: ['Admin', 'Analyst'],
     },
     {
-        href: '/users',
+        href: '/dashboard/users',
         label: 'User Management',
         icon: Users,
         roles: ['Admin']
     },
     {
-      href: '/settings',
+      href: '/dashboard/settings',
       label: 'Settings',
       icon: Settings,
       roles: ['Admin', 'Analyst', 'Standard'],
@@ -64,7 +64,7 @@ export function SidebarNav() {
             <SidebarMenuItem key={item.href}>
             <Link href={item.href}>
                 <SidebarMenuButton
-                isActive={pathname === item.href}
+                isActive={pathname.startsWith(item.href) && (item.href !== '/dashboard' || pathname === '/dashboard')}
                 tooltip={item.label}
                 >
                 <item.icon />

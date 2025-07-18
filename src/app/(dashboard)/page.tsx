@@ -10,7 +10,7 @@ export default function DashboardPage() {
   return (
     <>
       <DashboardHeader title="Dashboard">
-        <Link href="/tickets/new">
+        <Link href="/dashboard/tickets/new">
           <Button>
             <PlusCircle />
             New Ticket

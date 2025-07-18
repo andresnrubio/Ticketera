@@ -211,7 +211,7 @@ export function TicketList({ tickets }: { tickets: Ticket[] }) {
             {sortedAndFilteredTickets.map((ticket) => (
               <TableRow key={ticket.id}>
                 <TableCell className="font-medium">
-                  <Link href={`/tickets/${ticket.id}`} className="text-primary hover:underline">
+                  <Link href={`/dashboard/tickets/${ticket.id}`} className="text-primary hover:underline">
                     {ticket.id}
                   </Link>
                 </TableCell>
