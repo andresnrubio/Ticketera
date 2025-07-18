@@ -12,7 +12,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
@@ -26,6 +25,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Paperclip, Send, X } from 'lucide-react';
 import React from 'react';
 import Image from 'next/image';
+import { RichTextEditor } from './rich-text-editor';
 
 const formSchema = z.object({
   customerName: z.string().min(2, 'Name must be at least 2 characters.'),
@@ -151,10 +151,10 @@ export function NewTicketForm() {
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Textarea
+                    <RichTextEditor
+                      value={field.value}
+                      onChange={field.onChange}
                       placeholder="Please describe the issue in detail..."
-                      className="min-h-[150px]"
-                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
