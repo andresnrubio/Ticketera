@@ -22,7 +22,7 @@ export default function DashboardLayout({
     }
   }, [user, loading, router]);
 
-  if (loading || !user) {
+  if (loading) {
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-background">
             <div className="flex items-center gap-2 mb-4">
@@ -39,6 +39,12 @@ export default function DashboardLayout({
     );
   }
 
+  if (!user) {
+    // This case will be hit after loading is false and user is null.
+    // The useEffect will have already initiated the redirect.
+    // Returning null prevents a flash of unstyled content.
+    return null;
+  }
 
   return (
     <SidebarProvider>
