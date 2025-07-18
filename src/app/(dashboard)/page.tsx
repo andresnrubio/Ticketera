@@ -4,6 +4,7 @@ import { tickets } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { PlusCircle } from 'lucide-react';
+import { TicketSummary } from '@/components/ticket-summary';
 
 export default function DashboardPage() {
   return (
@@ -16,7 +17,10 @@ export default function DashboardPage() {
           </Button>
         </Link>
       </DashboardHeader>
-      <TicketList tickets={tickets} />
+      <div className="space-y-6">
+        <TicketSummary tickets={tickets} />
+        <TicketList tickets={tickets} />
+      </div>
     </>
   );
 }

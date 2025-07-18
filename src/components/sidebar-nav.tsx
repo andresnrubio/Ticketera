@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, PlusCircle, Settings, Ticket } from 'lucide-react';
+import { LayoutDashboard, Users, Settings, Ticket, BarChart3 } from 'lucide-react';
 import {
   SidebarMenu,
   SidebarMenuItem,
@@ -23,7 +23,19 @@ export function SidebarNav() {
     {
       href: '/tickets/new',
       label: 'New Ticket',
-      icon: PlusCircle,
+      icon: Ticket,
+    },
+    {
+      href: '/analytics',
+      label: 'Analytics',
+      icon: BarChart3,
+      role: ['Admin'],
+    },
+    {
+        href: '/users',
+        label: 'User Management',
+        icon: Users,
+        role: ['Admin']
     },
     {
       href: '/settings',

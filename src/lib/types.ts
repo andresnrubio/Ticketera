@@ -1,5 +1,14 @@
 export type TicketStatus = 'Open' | 'In Progress' | 'Resolved' | 'Closed';
 export type TicketPriority = 'Low' | 'Medium' | 'High' | 'Urgent';
+export type UserRole = 'Admin' | 'Analyst' | 'Standard';
+
+export type User = {
+  id: string;
+  name: string;
+  email: string;
+  avatar?: string;
+  role: UserRole;
+};
 
 export type Agent = {
   id: string;
